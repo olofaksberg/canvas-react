@@ -49,24 +49,33 @@ export const get_all_scores = async (req, res) => {
   }
 };
 
-// export const get_top_scores = async (req, res) => {
-//   try {
-//     const scores = await scoreModel
-//       .paginate({}, { offset: 0, limit: 2 })
-//       .then((result) => console.log(result));
-//     return res.json({
-//       message: "Find scores success",
-//       success: true,
-//       data: scores,
-//     });
-//   } catch (err) {
-//     return res.json({
-//       message: "Find scores failed: " + err,
-//       success: false,
-//       data: null,
-//     });
-//   }
-// };
+export const get_top_scores = async (req, res) => {
+  const { page, limit } = req.query;
+  try {
+    const scores = await scoreModel
+      .find()
+      .limit(limit * 1)
+      .skip((page - 1) * limit)
+      .sort([["score", -1]])
+      .exec();
+    const count = await scoreModel.countDocuments();
+    return res.json({
+      message: "Find scores success",
+      success: true,
+      data: {
+        scores: scores,
+        totalPages: Math.ceil(count / limit),
+        page: page,
+      },
+    });
+  } catch (err) {
+    return res.json({
+      message: "Find scores failed: " + err,
+      success: false,
+      data: null,
+    });
+  }
+};
 
 export const delete_all_scores = async (req, res) => {
   try {

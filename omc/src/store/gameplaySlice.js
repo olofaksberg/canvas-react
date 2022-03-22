@@ -11,12 +11,12 @@ const initLives = () => {
 };
 
 const initialState = {
+  playerName: "",
+  playerEmail: "",
   lives: initLives(),
   score: 0,
   speed: settings.gameSpeed,
-  // tempSpeed: 5,
-  // tempSpeedOn: false,
-  frame: 1,
+  gameOver: false,
   status: "idle",
   error: null,
 };
@@ -34,33 +34,49 @@ export const gameplaySlice = createSlice({
     updateScore: (state, action) => {
       state.score += settings.scorePerSave;
     },
+    updatePlayer: (state, action) => {
+      state.playerName = action.payload.name;
+      state.playerEmail = action.payload.email;
+    },
     updateSpeed: (state, action) => {
       state.speed += action.payload;
     },
     updateFrame: (state, action) => {
       state.frame++;
     },
-    // reset: (state, action) => {
-    //   state.lives = ["", "", "", "", "", "", "", "", "", ""];
-    //   state.score = 0;
-    //   state.speed = 5;
-    //   state.status = "idle";
-    //   state.error = null;
-    // },
+    setGameOver: (state, action) => {
+      state.gameOver = action.payload;
+    },
+    reset: (state, action) => {
+      state.playerName = "";
+      state.playerEmail = "";
+      state.lives = initLives();
+      state.score = 0;
+      state.speed = settings.gameSpeed;
+      state.status = "idle";
+      state.error = null;
+    },
   },
 });
 
-export const { updateFrame, lostLives, getLives, updateScore } =
-  gameplaySlice.actions;
+export const {
+  updateFrame,
+  lostLives,
+  getLives,
+  updateScore,
+  setGameOver,
+  reset,
+} = gameplaySlice.actions;
 
 // export states
 export const status = (state) => state.gameplay.status;
 export const error = (state) => state.gameplay.error;
 
 // export data
-export const frame = (state) => state.gameplay.frame;
 export const lives = (state) => state.gameplay.lives;
+export const score = (state) => state.gameplay.score;
 export const speed = (state) => state.gameplay.speed;
+export const gameOver = (state) => state.gameplay.gameOver;
 // export const data = (state) => state.scores.data;
 
 export default gameplaySlice.reducer;

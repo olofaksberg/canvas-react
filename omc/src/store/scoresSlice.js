@@ -9,6 +9,12 @@ export const getAllScores = createAsyncThunk("getAllScores", async () => {
   return res;
 });
 
+export const getTopScores = createAsyncThunk("getTopScores", async (query) => {
+  const res = await GET(`/get_top_scores?${query}`);
+  console.log(res);
+  return res;
+});
+
 export const createScore = createAsyncThunk("createScore", async (newScore) => {
   const res = await POST(`/create_score`, newScore);
   return res;
@@ -23,7 +29,7 @@ export const deleteAllScores = createAsyncThunk(
 );
 
 const initialState = {
-  data: [],
+  data: { scores: [] },
   status: "idle",
   error: null,
 };
@@ -51,6 +57,26 @@ export const scoresSlice = createSlice({
         }
       })
       .addCase(getAllScores.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.error.message;
+      })
+
+      // get paginated data
+      .addCase(getTopScores.pending, (state, action) => {
+        state.status = "loading";
+      })
+      .addCase(getTopScores.fulfilled, (state, action) => {
+        const { success, message, data } = action.payload;
+        console.log(data);
+        if (success) {
+          state.status = "succeeded";
+          state.data = data;
+        } else {
+          state.status = "failed";
+          state.error = message;
+        }
+      })
+      .addCase(getTopScores.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.error.message;
       })

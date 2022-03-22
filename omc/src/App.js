@@ -7,7 +7,7 @@ import { Game } from "./pages/game/Game";
 
 import { useDispatch, useSelector } from "react-redux";
 
-import { status, getAllScores } from "./store/scoresSlice.js";
+import { status, getAllScores, getTopScores } from "./store/scoresSlice.js";
 
 import "./style/main.scss";
 import { NoAuthMessage } from "./pages/home/components/NoAuthMessage";
@@ -19,7 +19,8 @@ function App() {
 
   useEffect(() => {
     if (scoresStatus === "idle") {
-      dispatch(getAllScores());
+      // dispatch(getAllScores());
+      dispatch(getTopScores("page=1&limit=10"));
     }
   }, [scoresStatus, dispatch]);
 

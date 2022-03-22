@@ -7,21 +7,24 @@ import logotype from "../../sprite/logotype.png";
 
 import { useEffect, useState } from "react";
 
-import { useArrayRef } from "../../utils/useArrayRef";
-
 import { data } from "../../store/scoresSlice";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { If } from "../../components/utils/If";
+import { Scoreboard } from "../../components/Scoreboard";
+import { gameOver, reset, setGameOver } from "../../store/gameplaySlice";
 
 export const Home = ({ setGameAuth }) => {
-  const [inputs, ref] = useArrayRef();
   const scores = useSelector(data);
+  const gameOverState = useSelector(gameOver);
+  const score = useSelector((state) => state.gameplay.score);
+  const dispatch = useDispatch();
   const [inputsState, setInputsState] = useState({
     name: false,
     email: false,
     checkbox: false,
   });
+  // const [gameOverState, setGameOverState] = useState(false);
 
   const checkAuth = () => {
     if (Object.values(inputsState).every(Boolean)) {
@@ -39,102 +42,135 @@ export const Home = ({ setGameAuth }) => {
     }
   }, [inputsState]);
 
+  useEffect(() => {
+    if (!gameOverState) {
+      dispatch(reset());
+    }
+  }, [gameOverState]);
+
   return (
     <div class="main">
       <main>
-        <img src={petter} alt="" class="petter" />
+        <img src={petter} alt="" className="petter" />
         <div id="fake-canvas">
           <div id="content">
-            <h1>Mission Briefing</h1>
-            <form>
-              <input
-                type="text"
-                name="name"
-                ref={ref}
-                id="name"
-                placeholder="Fill in your name..."
-                required
-                onChange={(e) =>
-                  setInputsState((prev) => {
-                    return {
-                      ...prev,
-                      name: e.target.value ? true : false,
-                    };
-                  })
-                }
-              />
-              <input
-                type="email"
-                name="email"
-                ref={ref}
-                id="email"
-                placeholder="Fill in your e-mail..."
-                required
-                onChange={(e) =>
-                  setInputsState((prev) => {
-                    return {
-                      ...prev,
-                      email: e.target.validity.valid ? true : false,
-                    };
-                  })
-                }
-              />
-              <label htmlFor="">I agree:</label>
-              <input
-                type="checkbox"
-                name=""
-                id="privacy"
-                ref={ref}
-                onChange={(e) =>
-                  setInputsState((prev) => {
-                    return {
-                      ...prev,
-                      checkbox: e.target.checked ? true : false,
-                    };
-                  })
-                }
-              />
-            </form>
-            <If condition={checkAuth()}>
-              <Link to={`/game`}>
-                <button id="startBtn">Gotta save ´em all</button>
-              </Link>
+            <If condition={!gameOverState}>
+              <h1>Mission Briefing</h1>
+              <Form setInputsState={setInputsState} />
+              <Startbutton checkAuth={checkAuth} />
+              <Rules />
             </If>
-            <div id="rules">
-              <h2>How to play!</h2>
-              <div id="instructions">
-                <div class="keys">
-                  <h4>How to stear:</h4>
-                  <p>Use arrow keys</p>
-                </div>
-                <div class="object">
-                  <h4>Pickup:</h4>
-                  <img src={person} />
-                </div>
-                <div class="threat">
-                  <h4>Watch out for:</h4>
-                  <img src={stones} />
-                </div>
+            <If condition={gameOverState}>
+              <h1>GAME OVER</h1>
+              <h5>Thanks for playing!</h5>
+              <h3>Score: {score}</h3>
+              <div className="game-over-btns">
+                <button
+                  onClick={() => {
+                    dispatch(setGameOver(false));
+                  }}
+                >
+                  Submit score
+                </button>
+                <button
+                  onClick={() => {
+                    dispatch(setGameOver(false));
+                  }}
+                >
+                  Skip
+                </button>
               </div>
-            </div>
+            </If>
           </div>
         </div>
       </main>
       <aside>
         <img class="logo" src={logotype} />
-        <div class="scoreboard">
-          <h3>Scoreboard</h3>
-          <ol id="scoreB">
-            {scores.map((d) => {
-              return (
-                <li>
-                  {d.name} <span>{d.score}</span>
-                </li>
-              );
-            })}
-          </ol>
-        </div>
+        <Scoreboard scores={scores.scores} />
       </aside>
+    </div>
+  );
+};
+
+const Form = ({ setInputsState }) => {
+  return (
+    <form>
+      <input
+        type="text"
+        name="name"
+        id="name"
+        placeholder="Fill in your name..."
+        required
+        onChange={(e) =>
+          setInputsState((prev) => {
+            return {
+              ...prev,
+              name: e.target.value ? true : false,
+            };
+          })
+        }
+      />
+      <input
+        type="email"
+        name="email"
+        id="email"
+        placeholder="Fill in your e-mail..."
+        required
+        onChange={(e) =>
+          setInputsState((prev) => {
+            return {
+              ...prev,
+              email: e.target.validity.valid ? true : false,
+            };
+          })
+        }
+      />
+      <label htmlFor="">I agree:</label>
+      <input
+        type="checkbox"
+        name=""
+        id="privacy"
+        onChange={(e) =>
+          setInputsState((prev) => {
+            return {
+              ...prev,
+              checkbox: e.target.checked ? true : false,
+            };
+          })
+        }
+      />
+    </form>
+  );
+};
+
+const Startbutton = ({ checkAuth }) => {
+  return (
+    <If condition={checkAuth()}>
+      <Link to={`/game`}>
+        <button id="startBtn">Gotta save ´em all</button>
+      </Link>
+    </If>
+  );
+};
+
+const Rules = () => {
+  return (
+    <div id="rules">
+      <h2>How to play!</h2>
+      <div id="instructions">
+        <div class="keys">
+          <h4>How to stear:</h4>
+          <p>Use arrow keys</p>
+        </div>
+        <div class="object">
+          <h4>Pickup:</h4>
+          <img src={person} />
+        </div>
+        <div class="threat">
+          <h4>Watch out for:</h4>
+          <img src={stones} />
+        </div>
+      </div>
     </div>
   );
 };

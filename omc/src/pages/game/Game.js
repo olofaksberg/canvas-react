@@ -1,6 +1,13 @@
 /** @format */
 
-import { lives, getLives } from "../../store/gameplaySlice";
+import {
+  lives,
+  getLives,
+  gameOver,
+  setGameOver,
+} from "../../store/gameplaySlice";
+
+import { data } from "../../store/scoresSlice";
 
 import lifeRing from "../../sprite/life-ring.png";
 import logotype from "../../sprite/logotype.png";
@@ -9,16 +16,20 @@ import { Canvas } from "./canvas/Canvas.js";
 import { useEffect, useLayoutEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { settings } from "./settings";
+import { Scoreboard } from "../../components/Scoreboard";
 
 export const Game = ({ gameState, setGameState }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const gameOverState = useSelector(gameOver);
+  const scores = useSelector(data);
   const lives = useSelector((state) => state.gameplay.lives);
   const score = useSelector((state) => state.gameplay.score);
 
   useEffect(() => {
     if (lives.length < 1) {
       navigate("/");
+      dispatch(setGameOver(true));
     }
   }, [lives]);
 
@@ -44,29 +55,7 @@ export const Game = ({ gameState, setGameState }) => {
       </main>
       <aside>
         <img class="logo" src={logotype} />
-        <div class="scoreboard">
-          <h3>Scoreboard</h3>
-          <ol id="scoreB">
-            <li>
-              Mattias <span>1200</span>
-            </li>
-            <li>
-              Olof <span>1200</span>
-            </li>
-            <li>
-              Petter <span>1200</span>
-            </li>
-            <li>
-              Niklas <span>1200</span>
-            </li>
-            <li>...</li>
-            <li>...</li>
-            <li>...</li>
-            <li>...</li>
-            <li>...</li>
-            <li>...</li>
-          </ol>
-        </div>
+        <Scoreboard scores={scores.scores} />
       </aside>
     </div>
   );
