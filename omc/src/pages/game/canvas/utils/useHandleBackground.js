@@ -1,15 +1,17 @@
 /** @format */
 
 import { useState } from "react";
+import { useSelector } from "react-redux";
 import bg1Pic from "../../../../sprite/bg1.png";
 import bg2Pic from "../../../../sprite/bg2.png";
 import bg3Pic from "../../../../sprite/bg3.png";
 import bg4Pic from "../../../../sprite/bg4.png";
-import { useHandleBoat } from "./useHandleBoat";
+import { speed } from "../../../../store/gameplaySlice";
 
 import { settings } from "../../settings";
 
 export const useHandleBackground = () => {
+  const speed = useSelector((state) => state.gameplay.speed);
   const bg1P = new Image();
   bg1P.src = bg1Pic;
   const bg2P = new Image();
@@ -19,15 +21,25 @@ export const useHandleBackground = () => {
   const bg4P = new Image();
   bg4P.src = bg4Pic;
 
-  const [mainSpeedModifier, setMainSpeedModifier] = useState(
-    settings.background.mainSpeed
-  );
-  // const [tempSpeedOn, setTempSpeedOn] = useState(false);
+  const speedModifier = 0.2;
 
-  // const [speedBg1, setSpeedBg1] = useState(settings.background.bg1.speed);
-  // const [speedBg2, setSpeedBg2] = useState(settings.background.bg2.speed);
-  // const [speedBg3, setSpeedBg3] = useState(settings.background.bg3.speed);
-  // const [speedBg4, setSpeedBg4] = useState(settings.background.bg4.speed);
+  const [mainSpeed, setMainSpeed] = useState(
+    settings.background.mainSpeed * speed * speedModifier
+  );
+  // const [backgroundSpeed, setBackgroundSpeed] = useState(settings.background.mainSpeed + speed);
+
+  const [speedBg1, setSpeedBg1] = useState(
+    settings.background.bg1.speed * speed
+  );
+  const [speedBg2, setSpeedBg2] = useState(
+    settings.background.bg2.speed * speed
+  );
+  const [speedBg3, setSpeedBg3] = useState(
+    settings.background.bg3.speed * speed
+  );
+  const [speedBg4, setSpeedBg4] = useState(
+    settings.background.bg4.speed * speed
+  );
 
   const [bg1, setBg1] = useState({
     image: bg1P,
@@ -36,7 +48,7 @@ export const useHandleBackground = () => {
     width: 2400,
     height: settings.background.height,
     x2: 2400,
-    speed: settings.background.bg1.speed / mainSpeedModifier,
+    speed: speedBg1 * mainSpeed,
   });
   const [bg1Copy, setBg1Copy] = useState({
     image: bg1P,
@@ -45,7 +57,7 @@ export const useHandleBackground = () => {
     width: 2400,
     height: settings.background.height,
     x2: 4800,
-    speed: settings.background.bg1.speed / mainSpeedModifier,
+    speed: speedBg1 * mainSpeed,
   });
   const [bg2, setBg2] = useState({
     image: bg2P,
@@ -54,7 +66,7 @@ export const useHandleBackground = () => {
     width: 2400,
     height: settings.background.height,
     x2: 2400,
-    speed: settings.background.bg2.speed / mainSpeedModifier,
+    speed: speedBg2 * mainSpeed,
   });
   const [bg2Copy, setBg2Copy] = useState({
     image: bg2P,
@@ -63,7 +75,7 @@ export const useHandleBackground = () => {
     width: 2400,
     height: settings.background.height,
     x2: 4800,
-    speed: settings.background.bg2.speed / mainSpeedModifier,
+    speed: speedBg2 * mainSpeed,
   });
   const [bg3, setBg3] = useState({
     image: bg3P,
@@ -72,7 +84,7 @@ export const useHandleBackground = () => {
     width: 2400,
     height: settings.background.height,
     x2: 2400,
-    speed: settings.background.bg3.speed / mainSpeedModifier,
+    speed: speedBg3 * mainSpeed,
   });
   const [bg3Copy, setBg3Copy] = useState({
     image: bg3P,
@@ -81,7 +93,7 @@ export const useHandleBackground = () => {
     width: 2400,
     height: settings.background.height,
     x2: 4800,
-    speed: settings.background.bg3.speed / (mainSpeedModifier + 2),
+    speed: speedBg3 * mainSpeed,
   });
   const [bg4, setBg4] = useState({
     image: bg4P,
@@ -90,7 +102,7 @@ export const useHandleBackground = () => {
     width: 2400,
     height: settings.background.height,
     x2: 2400,
-    speed: settings.background.bg4.speed / mainSpeedModifier,
+    speed: speedBg4 * mainSpeed,
   });
   const [bg4Copy, setBg4Copy] = useState({
     image: bg3P,
@@ -99,7 +111,7 @@ export const useHandleBackground = () => {
     width: 2400,
     height: settings.background.height,
     x2: 4800,
-    speed: settings.background.bg4.speed / mainSpeedModifier,
+    speed: speedBg4 * mainSpeed,
     // tempSpeed: speedBg4 / (mainSpeedModifier + 2),
   });
 
@@ -112,22 +124,35 @@ export const useHandleBackground = () => {
     context.drawImage(o.image, o.x2, o.y, o.width, o.height);
   };
 
-  const updateBackground = (context, boat, canvasWidth, canvasHeight) => {
+  const updateBackground = (context, boat) => {
     if (boat.moving) {
-      if (boat.moving === "right" && boat.x < canvasWidth - boat.width) {
-        setMainSpeedModifier(2);
+      if (
+        boat.moving === "right" &&
+        boat.x < settings.canvasWidth - boat.width
+      ) {
+        setMainSpeed(
+          settings.background.speedModifier.boatMovement.right *
+            speed *
+            speedModifier *
+            0.2
+        );
       }
       if (boat.moving === "left") {
-        setMainSpeedModifier(6);
+        setMainSpeed(
+          settings.background.speedModifier.boatMovement.left *
+            speed *
+            speedModifier *
+            0.2
+        );
       }
       if (boat.moving === "down") {
-        setMainSpeedModifier(4);
+        setMainSpeed(settings.background.mainSpeed * speed * speedModifier);
       }
       if (boat.moving === "up") {
-        setMainSpeedModifier(4);
+        setMainSpeed(settings.background.mainSpeed * speed * speedModifier);
       }
     } else {
-      setMainSpeedModifier(4);
+      setMainSpeed(settings.background.mainSpeed * speed * speedModifier);
     }
     if (bg4.x2 < 0) {
       setBg4((prev) => {
@@ -141,8 +166,9 @@ export const useHandleBackground = () => {
       setBg4((prev) => {
         return {
           ...prev,
-          x: prev.x - settings.background.bg4.speed / mainSpeedModifier,
-          x2: prev.x2 - settings.background.bg4.speed / mainSpeedModifier,
+          x: prev.x - settings.background.bg4.speed * mainSpeed * speedModifier,
+          x2:
+            prev.x2 - settings.background.bg4.speed * mainSpeed * speedModifier,
         };
       });
     }
@@ -158,8 +184,9 @@ export const useHandleBackground = () => {
       setBg4Copy((prev) => {
         return {
           ...prev,
-          x: prev.x - settings.background.bg4.speed / mainSpeedModifier,
-          x2: prev.x2 - settings.background.bg4.speed / mainSpeedModifier,
+          x: prev.x - settings.background.bg4.speed * mainSpeed * speedModifier,
+          x2:
+            prev.x2 - settings.background.bg4.speed * mainSpeed * speedModifier,
         };
       });
     }
@@ -177,8 +204,9 @@ export const useHandleBackground = () => {
       setBg3((prev) => {
         return {
           ...prev,
-          x: prev.x - settings.background.bg3.speed / mainSpeedModifier,
-          x2: prev.x2 - settings.background.bg3.speed / mainSpeedModifier,
+          x: prev.x - settings.background.bg3.speed * mainSpeed * speedModifier,
+          x2:
+            prev.x2 - settings.background.bg3.speed * mainSpeed * speedModifier,
         };
       });
     }
@@ -194,8 +222,9 @@ export const useHandleBackground = () => {
       setBg3Copy((prev) => {
         return {
           ...prev,
-          x: prev.x - settings.background.bg3.speed / mainSpeedModifier,
-          x2: prev.x2 - settings.background.bg3.speed / mainSpeedModifier,
+          x: prev.x - settings.background.bg3.speed * mainSpeed * speedModifier,
+          x2:
+            prev.x2 - settings.background.bg3.speed * mainSpeed * speedModifier,
         };
       });
     }
@@ -213,8 +242,9 @@ export const useHandleBackground = () => {
       setBg2((prev) => {
         return {
           ...prev,
-          x: prev.x - settings.background.bg2.speed / mainSpeedModifier,
-          x2: prev.x2 - settings.background.bg2.speed / mainSpeedModifier,
+          x: prev.x - settings.background.bg2.speed * mainSpeed * speedModifier,
+          x2:
+            prev.x2 - settings.background.bg2.speed * mainSpeed * speedModifier,
         };
       });
     }
@@ -230,8 +260,9 @@ export const useHandleBackground = () => {
       setBg2Copy((prev) => {
         return {
           ...prev,
-          x: prev.x - settings.background.bg2.speed / mainSpeedModifier,
-          x2: prev.x2 - settings.background.bg2.speed / mainSpeedModifier,
+          x: prev.x - settings.background.bg2.speed * mainSpeed * speedModifier,
+          x2:
+            prev.x2 - settings.background.bg2.speed * mainSpeed * speedModifier,
         };
       });
     }
@@ -249,8 +280,9 @@ export const useHandleBackground = () => {
       setBg1((prev) => {
         return {
           ...prev,
-          x: prev.x - settings.background.bg1.speed / mainSpeedModifier,
-          x2: prev.x2 - settings.background.bg1.speed / mainSpeedModifier,
+          x: prev.x - settings.background.bg1.speed * mainSpeed * speedModifier,
+          x2:
+            prev.x2 - settings.background.bg1.speed * mainSpeed * speedModifier,
         };
       });
     }
@@ -266,8 +298,9 @@ export const useHandleBackground = () => {
       setBg1Copy((prev) => {
         return {
           ...prev,
-          x: prev.x - settings.background.bg1.speed / mainSpeedModifier,
-          x2: prev.x2 - settings.background.bg1.speed / mainSpeedModifier,
+          x: prev.x - settings.background.bg1.speed * mainSpeed * speedModifier,
+          x2:
+            prev.x2 - settings.background.bg1.speed * mainSpeed * speedModifier,
         };
       });
     }
@@ -277,6 +310,5 @@ export const useHandleBackground = () => {
 
   return {
     updateBackground,
-    setMainSpeedModifier,
   };
 };

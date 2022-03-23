@@ -4,20 +4,28 @@ import { useState } from "react";
 import obstaclePic from "../../../../sprite/Stones.png";
 import pickUpPic from "../../../../sprite/Person.png";
 import { settings } from "../../settings";
+
+import { speed } from "../../../../store/gameplaySlice";
+import { useSelector } from "react-redux";
+
 export const obstacleArray = [];
 export const pickUpsArray = [];
 export const useHandleSpawners = () => {
+  const speed = useSelector((state) => state.gameplay.speed);
   const obstacle = new Image();
   obstacle.src = obstaclePic;
   const pickUp = new Image();
   pickUp.src = pickUpPic;
-  const [obstaclesSpeed, setObstaclesSpeed] = useState(settings.stones.speed);
+  const speedModifier = 0.35;
+  const [obstaclesSpeed, setObstaclesSpeed] = useState(
+    settings.stones.speed * speed
+  );
   const [obstaclesSpawnRate, setObstaclesSpawnRate] = useState(
     settings.stones.spawnRate
   );
 
   const [pickUpsSpeed, setPickUpsSpeed] = useState(
-    settings.drowningPeople.speed
+    settings.drowningPeople.speed * speed
   );
   const [pickUpsSpawnRate, setPickUpsSpawnRate] = useState(
     settings.drowningPeople.spawnRate
@@ -33,19 +41,27 @@ export const useHandleSpawners = () => {
         boat.moving === "right" &&
         boat.x < settings.canvasWidth - boat.width
       ) {
-        setObstaclesSpeed(settings.stones.speedModifier.boatMovement.right);
+        setObstaclesSpeed(
+          settings.stones.speedModifier.boatMovement.right *
+            speed *
+            speedModifier
+        );
       }
       if (boat.moving === "left") {
-        setObstaclesSpeed(settings.stones.speedModifier.boatMovement.left);
+        setObstaclesSpeed(
+          settings.stones.speedModifier.boatMovement.left *
+            speed *
+            speedModifier
+        );
       }
       if (boat.moving === "down") {
-        setObstaclesSpeed(settings.stones.speed);
+        setObstaclesSpeed(settings.stones.speed * speed * speedModifier);
       }
       if (boat.moving === "up") {
-        setObstaclesSpeed(settings.stones.speed);
+        setObstaclesSpeed(settings.stones.speed * speed * speedModifier);
       }
     } else {
-      setObstaclesSpeed(settings.stones.speed);
+      setObstaclesSpeed(settings.stones.speed * speed * speedModifier);
     }
     o.x = o.x - obstaclesSpeed;
     drawObstacle(context, o.x, o.y, o.size);
@@ -62,22 +78,26 @@ export const useHandleSpawners = () => {
         boat.x < settings.canvasWidth - boat.width
       ) {
         setPickUpsSpeed(
-          settings.drowningPeople.speedModifier.boatMovement.right
+          settings.drowningPeople.speedModifier.boatMovement.right *
+            speed *
+            speedModifier
         );
       }
       if (boat.moving === "left") {
         setPickUpsSpeed(
-          settings.drowningPeople.speedModifier.boatMovement.left
+          settings.drowningPeople.speedModifier.boatMovement.left *
+            speed *
+            speedModifier
         );
       }
       if (boat.moving === "down") {
-        setPickUpsSpeed(settings.drowningPeople.speed);
+        setPickUpsSpeed(settings.drowningPeople.speed * speed * speedModifier);
       }
       if (boat.moving === "up") {
-        setPickUpsSpeed(settings.drowningPeople.speed);
+        setPickUpsSpeed(settings.drowningPeople.speed * speed * speedModifier);
       }
     } else {
-      setPickUpsSpeed(settings.drowningPeople.speed);
+      setPickUpsSpeed(settings.drowningPeople.speed * speed * speedModifier);
     }
     o.x = o.x - pickUpsSpeed;
     drawPickUp(context, o.x, o.y, o.size);

@@ -7,14 +7,22 @@ import { useHandleSpawners } from "./utils/useHandleSpawners";
 import { useHandleBackground } from "./utils/useHandleBackground";
 import { useHandleCrashes } from "./utils/useHandleCrashes";
 
-import { lostLives, updateScore } from "../../../store/gameplaySlice";
-import { useDispatch } from "react-redux";
+import {
+  lostLives,
+  updateScore,
+  score,
+  updateSpeed,
+  speed,
+} from "../../../store/gameplaySlice";
+import { useDispatch, useSelector } from "react-redux";
 import { useHandlePickups } from "./utils/useHandlePickups";
 import { settings } from "../settings";
 
 export const Canvas = ({ canvasWidth, canvasHeight }) => {
   const canvasRef = useRef();
   const dispatch = useDispatch();
+  const score = useSelector((state) => state.gameplay.score);
+  const speed = useSelector((state) => state.gameplay.speed);
   const [frame, setFrame] = useState(0);
   const [keysArray, setKeysArray] = useState([]);
 
@@ -50,6 +58,18 @@ export const Canvas = ({ canvasWidth, canvasHeight }) => {
     }
     if (handlePickups(boat)) {
       dispatch(updateScore());
+      if (
+        (score % settings.difficulty.savings.saves) * settings.scorePerSave ===
+          0 &&
+        settings.difficulty.savings.saves !== 0 &&
+        score !== 0
+      ) {
+        dispatch(updateSpeed(1));
+      }
+    }
+
+    if (frame % (settings.difficulty.timer.seconds * 65) === 0) {
+      dispatch(updateSpeed(1));
     }
   }, [frame]);
 

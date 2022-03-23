@@ -3,11 +3,11 @@ import { createSlice } from "@reduxjs/toolkit";
 import { settings } from "../pages/game/settings";
 
 const initLives = () => {
-  const mm = [];
+  const arr = [];
   for (let i = 0; i < settings.lives; i++) {
-    mm.push("");
+    arr.push("");
   }
-  return mm;
+  return arr;
 };
 
 const initialState = {
@@ -39,7 +39,8 @@ export const gameplaySlice = createSlice({
       state.playerEmail = action.payload.email;
     },
     updateSpeed: (state, action) => {
-      state.speed += action.payload;
+      state.speed += 0.3;
+      console.log(state.speed);
     },
     updateFrame: (state, action) => {
       state.frame++;
@@ -60,6 +61,7 @@ export const gameplaySlice = createSlice({
 });
 
 export const {
+  updateSpeed,
   updateFrame,
   lostLives,
   getLives,
