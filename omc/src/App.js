@@ -7,7 +7,7 @@ import { Game } from "./pages/game/Game";
 
 import { useDispatch, useSelector } from "react-redux";
 
-import { status, getAllScores, getTopScores } from "./store/scoresSlice.js";
+import { status, getTopScores } from "./store/scoresSlice.js";
 
 import "./style/main.scss";
 import { NoAuthMessage } from "./pages/home/components/NoAuthMessage";

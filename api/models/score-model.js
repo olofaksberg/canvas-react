@@ -9,7 +9,10 @@ const scoreSchema = new Schema({
   name: {
     type: String,
     required: true,
-    default: "Anonym",
+  },
+  email: {
+    type: String,
+    required: true,
   },
   score: {
     type: Number,

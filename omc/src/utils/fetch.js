@@ -43,13 +43,14 @@ export const PROTECTED_GET = async (endpoint, authLevel) => {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
-    //   authorization: getAuthLevel(authLevel),
+      //   authorization: getAuthLevel(authLevel),
     },
   }).then((res) => res.json());
 };
 
 // post
 export const POST = async (endpoint, data) => {
+  console.log(JSON.stringify(data));
   return await fetch(api_address + endpoint, {
     method: "POST",
     headers: {
@@ -64,7 +65,7 @@ export const PROTECTED_POST = async (endpoint, data, authLevel) => {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-    //   authorization: getAuthLevel(authLevel),
+      //   authorization: getAuthLevel(authLevel),
     },
     body: JSON.stringify(data),
   }).then((res) => res.json());

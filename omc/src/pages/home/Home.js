@@ -7,27 +7,42 @@ import logotype from "../../sprite/logotype.png";
 
 import { useEffect, useState } from "react";
 
-import { data } from "../../store/scoresSlice";
+import { createScore, resetYourRank } from "../../store/scoresSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { If } from "../../components/utils/If";
 import { Scoreboard } from "../../components/Scoreboard";
-import { gameOver, reset, setGameOver } from "../../store/gameplaySlice";
+import {
+  startGame,
+  gameOver,
+  setGameOver,
+  reset,
+} from "../../store/gameplaySlice";
 
 export const Home = ({ setGameAuth }) => {
-  const scores = useSelector(data);
-  const gameOverState = useSelector(gameOver);
-  const score = useSelector((state) => state.gameplay.score);
   const dispatch = useDispatch();
+
+  const player = {
+    score: useSelector((state) => state.gameplay.score),
+    email: useSelector((state) => state.gameplay.playerEmail),
+    name: useSelector((state) => state.gameplay.playerName),
+  };
+  const gameOverState = useSelector(gameOver);
+
   const [inputsState, setInputsState] = useState({
-    name: false,
-    email: false,
-    checkbox: false,
+    exists: {
+      name: false,
+      email: false,
+      checkbox: false,
+    },
+    content: {
+      name: "",
+      email: "",
+    },
   });
-  // const [gameOverState, setGameOverState] = useState(false);
 
   const checkAuth = () => {
-    if (Object.values(inputsState).every(Boolean)) {
+    if (Object.values(inputsState.exists).every(Boolean)) {
       return true;
     } else {
       return false;
@@ -57,38 +72,45 @@ export const Home = ({ setGameAuth }) => {
             <If condition={!gameOverState}>
               <h1>Mission Briefing</h1>
               <Form setInputsState={setInputsState} />
-              <Startbutton checkAuth={checkAuth} />
+              <Startbutton checkAuth={checkAuth} inputsState={inputsState} />
               <Rules />
             </If>
             <If condition={gameOverState}>
-              <h1>GAME OVER</h1>
-              <h5>Thanks for playing!</h5>
-              <h3>Score: {score}</h3>
-              <div className="game-over-btns">
-                <button
-                  onClick={() => {
-                    dispatch(setGameOver(false));
-                  }}
-                >
-                  Submit score
-                </button>
-                <button
-                  onClick={() => {
-                    dispatch(setGameOver(false));
-                  }}
-                >
-                  Skip
-                </button>
-              </div>
+              <GameOver player={player} />
             </If>
           </div>
         </div>
       </main>
       <aside>
         <img class="logo" src={logotype} />
-        <Scoreboard scores={scores.scores} />
+        <Scoreboard home={true} />
       </aside>
     </div>
+  );
+};
+
+const GameOver = ({ player }) => {
+  const dispatch = useDispatch();
+  const handleSubmit = (bool) => {
+    if (bool) {
+      dispatch(createScore(player));
+    }
+    dispatch(setGameOver(false));
+  };
+
+  useEffect(() => {
+    dispatch(resetYourRank());
+  }, []);
+  return (
+    <>
+      <h1>GAME OVER</h1>
+      <h5>Thanks for playing!</h5>
+      <h3>Score: {player.score}</h3>
+      <div className="game-over-btns">
+        <button onClick={() => handleSubmit(true)}>Submit score</button>
+        <button onClick={() => handleSubmit(false)}>Skip</button>
+      </div>
+    </>
   );
 };
 
@@ -105,7 +127,14 @@ const Form = ({ setInputsState }) => {
           setInputsState((prev) => {
             return {
               ...prev,
-              name: e.target.value ? true : false,
+              exists: {
+                ...prev.exists,
+                name: e.target.value ? true : false,
+              },
+              content: {
+                ...prev.content,
+                name: e.target.value,
+              },
             };
           })
         }
@@ -120,7 +149,14 @@ const Form = ({ setInputsState }) => {
           setInputsState((prev) => {
             return {
               ...prev,
-              email: e.target.validity.valid ? true : false,
+              exists: {
+                ...prev.exists,
+                email: e.target.validity.valid ? true : false,
+              },
+              content: {
+                ...prev.content,
+                email: e.target.value,
+              },
             };
           })
         }
@@ -134,7 +170,10 @@ const Form = ({ setInputsState }) => {
           setInputsState((prev) => {
             return {
               ...prev,
-              checkbox: e.target.checked ? true : false,
+              exists: {
+                ...prev.exists,
+                checkbox: e.target.checked ? true : false,
+              },
             };
           })
         }
@@ -143,10 +182,14 @@ const Form = ({ setInputsState }) => {
   );
 };
 
-const Startbutton = ({ checkAuth }) => {
+const Startbutton = ({ checkAuth, inputsState }) => {
+  const dispatch = useDispatch();
   return (
     <If condition={checkAuth()}>
-      <Link to={`/game`}>
+      <Link
+        onClick={() => dispatch(startGame(inputsState.content))}
+        to={`/game`}
+      >
         <button id="startBtn">Gotta save ´em all</button>
       </Link>
     </If>

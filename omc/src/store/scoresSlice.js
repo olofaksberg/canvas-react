@@ -16,6 +16,7 @@ export const getTopScores = createAsyncThunk("getTopScores", async (query) => {
 });
 
 export const createScore = createAsyncThunk("createScore", async (newScore) => {
+  console.log(newScore);
   const res = await POST(`/create_score`, newScore);
   return res;
 });
@@ -28,8 +29,11 @@ export const deleteAllScores = createAsyncThunk(
   }
 );
 
+const yourRankModel = { rank: null, data: { name: null, score: null } };
+
 const initialState = {
   data: { scores: [] },
+  yourRank: yourRankModel,
   status: "idle",
   error: null,
 };
@@ -37,7 +41,11 @@ const initialState = {
 export const scoresSlice = createSlice({
   name: "scores",
   initialState,
-  reducers: {},
+  reducers: {
+    resetYourRank: (state, action) => {
+      state.yourRank = yourRankModel;
+    },
+  },
   extraReducers(builder) {
     builder
       // GET DATA
@@ -87,9 +95,18 @@ export const scoresSlice = createSlice({
       })
       .addCase(createScore.fulfilled, (state, action) => {
         const { success, message, data } = action.payload;
+        console.log(data);
         if (success) {
           state.status = "succeeded";
-          state.data = state.data.concat(data);
+          state.data = {
+            ...state.data,
+            scores: data.scores,
+          };
+          if (data.yourRank) {
+            state.yourRank = data.yourRank;
+          } else {
+            state.yourRank = yourRankModel;
+          }
         } else {
           state.status = "failed";
           state.error = message;
@@ -122,12 +139,15 @@ export const scoresSlice = createSlice({
   },
 });
 
+export const { resetYourRank } = scoresSlice.actions;
+
 // export states
 export const status = (state) => state.scores.status;
 export const error = (state) => state.scores.error;
 
 // export data
 export const data = (state) => state.scores.data;
+export const yourRank = (state) => state.scores.yourRank;
 
 export const singleData = (state, id) =>
   state.scores.data.find((d) => d.id === id);

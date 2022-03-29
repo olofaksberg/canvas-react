@@ -5,9 +5,10 @@ import {
   getLives,
   gameOver,
   setGameOver,
+  startGame,
 } from "../../store/gameplaySlice";
 
-import { data } from "../../store/scoresSlice";
+import { data, getTopScores } from "../../store/scoresSlice";
 
 import lifeRing from "../../sprite/life-ring.png";
 import logotype from "../../sprite/logotype.png";
@@ -18,7 +19,7 @@ import { useNavigate } from "react-router-dom";
 import { settings } from "./settings";
 import { Scoreboard } from "../../components/Scoreboard";
 
-export const Game = ({ gameState, setGameState }) => {
+export const Game = ({}) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const gameOverState = useSelector(gameOver);
@@ -32,6 +33,10 @@ export const Game = ({ gameState, setGameState }) => {
       dispatch(setGameOver(true));
     }
   }, [lives]);
+
+  useEffect(() => {
+    dispatch(getTopScores("page=1&limit=10"));
+  }, []);
 
   return (
     <div class="main">

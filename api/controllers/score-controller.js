@@ -1,26 +1,51 @@
 /** @format */
 import { scoreModel } from "../models/score-model.js";
 
-export const create_score = async (req, res) => {
-  console.log(req.body);
-  try {
-    const newScore = await new scoreModel(req.body);
+const g_t_s = async (page, limit) => {
+  const scores = await scoreModel
+    .find()
+    .limit(limit * 1)
+    .skip((page - 1) * limit)
+    .sort([["score", -1]])
+    .exec();
 
-    newScore.save((err, data) => {
-      if (err) {
-        return res.json({
-          message: "Score failed: " + err,
-          success: false,
-          data: null,
-        });
-      } else {
+  return scores;
+};
+
+export const create_score = async (req, res) => {
+  try {
+    scoreModel
+      .create(req.body)
+      .then(async (c) => {
+        const i = await scoreModel
+          .find()
+          .sort([["score", -1]])
+          .exec()
+          .then((d) => {
+            return d.findIndex((e) => e._id.valueOf() === c._id.valueOf());
+          });
+        return {
+          scores: await g_t_s(1, 10),
+          yourRank: { data: c, rank: i + 1 },
+        };
+      })
+      .then((data) => {
+        let resData;
+        if (
+          data.scores.some(
+            (o) => o._id.valueOf() === data.yourRank.data._id.valueOf()
+          )
+        ) {
+          resData = { scores: data.scores };
+        } else {
+          resData = { scores: data.scores, yourRank: data.yourRank };
+        }
         return res.json({
           message: "Score success",
           success: true,
-          data: data,
+          data: resData,
         });
-      }
-    });
+      });
   } catch (err) {
     return res.json({
       message: "Score failed: " + err,
@@ -51,13 +76,9 @@ export const get_all_scores = async (req, res) => {
 
 export const get_top_scores = async (req, res) => {
   const { page, limit } = req.query;
+  const parsedPage = parseInt(page);
   try {
-    const scores = await scoreModel
-      .find()
-      .limit(limit * 1)
-      .skip((page - 1) * limit)
-      .sort([["score", -1]])
-      .exec();
+    const scores = await g_t_s(parsedPage, limit);
     const count = await scoreModel.countDocuments();
     return res.json({
       message: "Find scores success",
@@ -65,7 +86,7 @@ export const get_top_scores = async (req, res) => {
       data: {
         scores: scores,
         totalPages: Math.ceil(count / limit),
-        page: page,
+        page: parsedPage,
       },
     });
   } catch (err) {

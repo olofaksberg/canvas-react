@@ -25,6 +25,11 @@ export const gameplaySlice = createSlice({
   name: "gameplay",
   initialState,
   reducers: {
+    startGame: (state, action) => {
+      const { name, email } = action.payload;
+      state.playerName = name;
+      state.playerEmail = email;
+    },
     lostLives: (state, action) => {
       state.lives.pop();
     },
@@ -61,6 +66,7 @@ export const gameplaySlice = createSlice({
 });
 
 export const {
+  startGame,
   updateSpeed,
   updateFrame,
   lostLives,
@@ -75,6 +81,8 @@ export const status = (state) => state.gameplay.status;
 export const error = (state) => state.gameplay.error;
 
 // export data
+export const name = (state) => state.gameplay.playerName;
+export const email = (state) => state.gameplay.playerEmail;
 export const lives = (state) => state.gameplay.lives;
 export const score = (state) => state.gameplay.score;
 export const speed = (state) => state.gameplay.speed;

@@ -2,7 +2,7 @@
 
 export const settings = {
   // general
-  lives: 10,
+  lives: 1,
   scorePerSave: 50,
   canvasWidth: 1200,
   canvasHeight: 800,
