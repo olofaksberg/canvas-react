@@ -2,10 +2,14 @@
 
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 
-import { useHandleBoat } from "./utils/useHandleBoat";
-import { useHandleSpawners } from "./utils/useHandleSpawners";
-import { useHandleBackground } from "./utils/useHandleBackground";
-import { useHandleCrashes } from "./utils/useHandleCrashes";
+import { useHandlePlayerObject } from "../utils/playerObject/useHandlePlayerObject";
+
+import { useHandleObstacles } from "../utils/spawners/useHandleObstacles";
+import { useHandlePickups } from "../utils/spawners/useHandlePickups";
+import { useHandleCrash } from "../utils/events/useHandleCrash";
+import { useHandlePickup } from "../utils/events/useHandlePickup";
+
+import { useHandleBackground } from "../utils/useHandleBackground";
 
 import {
   lostLives,
@@ -15,22 +19,31 @@ import {
   speed,
 } from "../../../store/gameplaySlice";
 import { useDispatch, useSelector } from "react-redux";
-import { useHandlePickups } from "./utils/useHandlePickups";
+
 import { settings } from "../settings";
 
 export const Canvas = ({ canvasWidth, canvasHeight }) => {
   const canvasRef = useRef();
   const dispatch = useDispatch();
   const score = useSelector((state) => state.gameplay.score);
-  const speed = useSelector((state) => state.gameplay.speed);
+
   const [frame, setFrame] = useState(0);
   const [keysArray, setKeysArray] = useState([]);
 
-  const { moveBoat, drawBoat, boat } = useHandleBoat();
-  const { updateObstacles, updatePickups } = useHandleSpawners();
+  const {
+    movePlayerObject,
+    drawPlayerObject,
+    boat,
+    playerObjectAnimations,
+    hitbox,
+  } = useHandlePlayerObject();
+
+  const { updateObstacles } = useHandleObstacles();
+  const { updatePickups } = useHandlePickups();
+  const { handleCrash } = useHandleCrash();
+  const { handlePickup } = useHandlePickup();
+
   const { updateBackground } = useHandleBackground();
-  const { handleCrashes } = useHandleCrashes();
-  const { handlePickups } = useHandlePickups();
 
   useLayoutEffect(() => {
     let timerId;
@@ -45,18 +58,21 @@ export const Canvas = ({ canvasWidth, canvasHeight }) => {
   useEffect(() => {
     const canvas = canvasRef.current;
     const context = canvas.getContext("2d");
-    canvas.focus();
     context.clearRect(0, 0, settings.canvasWidth, settings.canvasHeight);
 
     updateBackground(context, boat);
-    drawBoat(context);
-    moveBoat(keysArray, frame);
-    updateObstacles(context, frame, boat);
+
     updatePickups(context, frame, boat);
-    if (handleCrashes(boat)) {
+    updateObstacles(context, frame, boat);
+
+    drawPlayerObject(context);
+    playerObjectAnimations(frame);
+    movePlayerObject(keysArray);
+
+    if (handleCrash(hitbox)) {
       dispatch(lostLives());
     }
-    if (handlePickups(boat)) {
+    if (handlePickup(hitbox)) {
       dispatch(updateScore());
       if (
         (score % settings.difficulty.savings.saves) * settings.scorePerSave ===
@@ -72,6 +88,11 @@ export const Canvas = ({ canvasWidth, canvasHeight }) => {
       dispatch(updateSpeed(1));
     }
   }, [frame]);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    canvas.focus();
+  }, []);
 
   return (
     <div className="container">

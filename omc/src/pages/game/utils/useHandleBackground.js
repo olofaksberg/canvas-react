@@ -2,16 +2,17 @@
 
 import { useState } from "react";
 import { useSelector } from "react-redux";
-import bg1Pic from "../../../../sprite/bg1.png";
-import bg2Pic from "../../../../sprite/bg2.png";
-import bg3Pic from "../../../../sprite/bg3.png";
-import bg4Pic from "../../../../sprite/bg4.png";
-import { speed } from "../../../../store/gameplaySlice";
+import bg1Pic from "../../../sprite/bg1.png";
+import bg2Pic from "../../../sprite/bg2.png";
+import bg3Pic from "../../../sprite/bg3.png";
+import bg4Pic from "../../../sprite/bg4.png";
+import { gameSpeed } from "../../../store/gameplaySlice";
+import { playerObject } from "../../../store/playerObjectSlice";
 
-import { settings } from "../../settings";
+import { settings } from "../settings";
 
 export const useHandleBackground = () => {
-  const speed = useSelector((state) => state.gameplay.speed);
+  const speed = useSelector(gameSpeed);
   const bg1P = new Image();
   bg1P.src = bg1Pic;
   const bg2P = new Image();
@@ -20,6 +21,8 @@ export const useHandleBackground = () => {
   bg3P.src = bg3Pic;
   const bg4P = new Image();
   bg4P.src = bg4Pic;
+
+  const { boat } = useSelector(playerObject);
 
   const speedModifier = 0.2;
 
@@ -124,7 +127,7 @@ export const useHandleBackground = () => {
     context.drawImage(o.image, o.x2, o.y, o.width, o.height);
   };
 
-  const updateBackground = (context, boat) => {
+  const updateBackground = (context) => {
     if (boat.moving) {
       if (
         boat.moving === "right" &&

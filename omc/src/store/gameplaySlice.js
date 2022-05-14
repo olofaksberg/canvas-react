@@ -15,7 +15,7 @@ const initialState = {
   playerEmail: "",
   lives: initLives(),
   score: 0,
-  speed: settings.gameSpeed,
+  gameSpeed: settings.gameSpeed,
   gameOver: false,
   status: "idle",
   error: null,
@@ -85,7 +85,7 @@ export const name = (state) => state.gameplay.playerName;
 export const email = (state) => state.gameplay.playerEmail;
 export const lives = (state) => state.gameplay.lives;
 export const score = (state) => state.gameplay.score;
-export const speed = (state) => state.gameplay.speed;
+export const gameSpeed = (state) => state.gameplay.gameSpeed;
 export const gameOver = (state) => state.gameplay.gameOver;
 // export const data = (state) => state.scores.data;
 
