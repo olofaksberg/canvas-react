@@ -1,20 +1,14 @@
 /** @format */
 
-import {
-  lives,
-  getLives,
-  gameOver,
-  setGameOver,
-  startGame,
-} from "../../store/gameplaySlice";
+import { setGameOver, gameplayData } from "../../store/gameplaySlice";
 
-import { data, getTopScores } from "../../store/scoresSlice";
+import { getTopScores, scoresData } from "../../store/scoresSlice";
 
 import lifeRing from "../../sprite/life-ring.png";
 import logotype from "../../sprite/logotype.png";
 import { useDispatch, useSelector } from "react-redux";
 import { Canvas } from "./canvas/Canvas.js";
-import { useEffect, useLayoutEffect } from "react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { settings } from "./settings";
 import { Scoreboard } from "../../components/Scoreboard";
@@ -22,10 +16,8 @@ import { Scoreboard } from "../../components/Scoreboard";
 export const Game = ({}) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const gameOverState = useSelector(gameOver);
-  const scores = useSelector(data);
-  const lives = useSelector((state) => state.gameplay.lives);
-  const score = useSelector((state) => state.gameplay.score);
+  const { scores } = useSelector(scoresData);
+  const { lives, score } = useSelector(gameplayData);
 
   useEffect(() => {
     if (lives.length < 1) {

@@ -30,13 +30,8 @@ export const Canvas = ({ canvasWidth, canvasHeight }) => {
   const [frame, setFrame] = useState(0);
   const [keysArray, setKeysArray] = useState([]);
 
-  const {
-    movePlayerObject,
-    drawPlayerObject,
-    boat,
-    playerObjectAnimations,
-    hitbox,
-  } = useHandlePlayerObject();
+  const { movePlayerObject, drawPlayerObject, boat, playerObjectAnimations } =
+    useHandlePlayerObject();
 
   const { updateObstacles } = useHandleObstacles();
   const { updatePickups } = useHandlePickups();
@@ -69,10 +64,10 @@ export const Canvas = ({ canvasWidth, canvasHeight }) => {
     playerObjectAnimations(frame);
     movePlayerObject(keysArray);
 
-    if (handleCrash(hitbox)) {
+    if (handleCrash()) {
       dispatch(lostLives());
     }
-    if (handlePickup(hitbox)) {
+    if (handlePickup()) {
       dispatch(updateScore());
       if (
         (score % settings.difficulty.savings.saves) * settings.scorePerSave ===

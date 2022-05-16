@@ -5,7 +5,7 @@ import obstaclePic from "../../../../sprite/Stones.png";
 
 import { settings } from "../../settings";
 
-import { gameSpeed } from "../../../../store/gameplaySlice";
+import { gameplayData } from "../../../../store/gameplaySlice";
 import { useSelector } from "react-redux";
 import { randomMinMax } from "../../../../utils/randomMinMax";
 import { pickupsArray } from "./useHandlePickups";
@@ -18,12 +18,11 @@ export const useHandleObstacles = () => {
   const { boat } = useSelector(playerObject);
   const obstacleImage = new Image();
   obstacleImage.src = obstaclePic;
-  const speed = useSelector(gameSpeed);
-  // console.log(gameSpeed);
-  console.log(speed);
+  // const speed = useSelector(gameSpeed);
+  const { gameSpeed } = useSelector(gameplayData);
 
   const [obstaclesSpeed, setObstaclesSpeed] = useState(
-    settings.stones.speed * speed
+    settings.stones.speed * gameSpeed
   );
 
   // not sure if this actually will be modified, so state seems unnecessary
@@ -43,7 +42,7 @@ export const useHandleObstacles = () => {
       case "right":
         setObstaclesSpeed(
           settings.stones.speedModifier.boatMovement.right *
-            speed *
+            gameSpeed *
             speedModifier
         );
         break;
@@ -51,13 +50,13 @@ export const useHandleObstacles = () => {
       case "left":
         setObstaclesSpeed(
           settings.stones.speedModifier.boatMovement.left *
-            speed *
+            gameSpeed *
             speedModifier
         );
         break;
 
       default:
-        setObstaclesSpeed(settings.stones.speed * speed * speedModifier);
+        setObstaclesSpeed(settings.stones.speed * gameSpeed * speedModifier);
         break;
     }
     o.x = o.x - obstaclesSpeed;

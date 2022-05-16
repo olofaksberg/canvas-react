@@ -38,11 +38,31 @@ export const playerObjectSlice = createSlice({
         case "up":
           state.boat.y = state.boat.y - state.boat.speed;
           state.boat.frameY = 3;
+          state.hitbox = [
+            {
+              x: state.boat.x + 50,
+              y: state.boat.y + 10,
+            },
+            {
+              x: state.boat.x + state.boat.width - 50,
+              y: state.boat.y + state.boat.height - 5,
+            },
+          ];
           break;
 
         case "down":
           state.boat.y = state.boat.y + state.boat.speed;
           state.boat.frameY = 1;
+          state.hitbox = [
+            {
+              x: state.boat.x + 50,
+              y: state.boat.y + 10,
+            },
+            {
+              x: state.boat.x + state.boat.width - 50,
+              y: state.boat.y + state.boat.height - 5,
+            },
+          ];
           break;
 
         case "right":
@@ -50,12 +70,12 @@ export const playerObjectSlice = createSlice({
           state.boat.frameY = 0;
           state.hitbox = [
             {
-              x: state.boat.x + 5,
-              y: state.boat.y,
+              x: state.boat.x + 40,
+              y: state.boat.y + 5,
             },
             {
               x: state.boat.x + state.boat.width - 5,
-              y: state.boat.y + state.boat.height - 5,
+              y: state.boat.y + state.boat.height - 10,
             },
           ];
           break;
@@ -67,10 +87,10 @@ export const playerObjectSlice = createSlice({
           state.hitbox = [
             {
               x: state.boat.x + 5,
-              y: state.boat.y + state.boat.height - 5,
+              y: state.boat.y + state.boat.height - 10,
             },
             {
-              x: state.boat.x + state.boat.width - 5,
+              x: state.boat.x + state.boat.width - 40,
               y: state.boat.y + 5,
             },
           ];

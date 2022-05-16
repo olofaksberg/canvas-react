@@ -6,13 +6,12 @@ import bg1Pic from "../../../sprite/bg1.png";
 import bg2Pic from "../../../sprite/bg2.png";
 import bg3Pic from "../../../sprite/bg3.png";
 import bg4Pic from "../../../sprite/bg4.png";
-import { gameSpeed } from "../../../store/gameplaySlice";
+import { gameplayData } from "../../../store/gameplaySlice";
 import { playerObject } from "../../../store/playerObjectSlice";
 
 import { settings } from "../settings";
 
 export const useHandleBackground = () => {
-  const speed = useSelector(gameSpeed);
   const bg1P = new Image();
   bg1P.src = bg1Pic;
   const bg2P = new Image();
@@ -22,26 +21,27 @@ export const useHandleBackground = () => {
   const bg4P = new Image();
   bg4P.src = bg4Pic;
 
+  const { gameSpeed } = useSelector(gameplayData);
   const { boat } = useSelector(playerObject);
 
   const speedModifier = 0.2;
 
   const [mainSpeed, setMainSpeed] = useState(
-    settings.background.mainSpeed * speed * speedModifier
+    settings.background.mainSpeed * gameSpeed * speedModifier
   );
   // const [backgroundSpeed, setBackgroundSpeed] = useState(settings.background.mainSpeed + speed);
 
   const [speedBg1, setSpeedBg1] = useState(
-    settings.background.bg1.speed * speed
+    settings.background.bg1.speed * gameSpeed
   );
   const [speedBg2, setSpeedBg2] = useState(
-    settings.background.bg2.speed * speed
+    settings.background.bg2.speed * gameSpeed
   );
   const [speedBg3, setSpeedBg3] = useState(
-    settings.background.bg3.speed * speed
+    settings.background.bg3.speed * gameSpeed
   );
   const [speedBg4, setSpeedBg4] = useState(
-    settings.background.bg4.speed * speed
+    settings.background.bg4.speed * gameSpeed
   );
 
   const [bg1, setBg1] = useState({
@@ -135,7 +135,7 @@ export const useHandleBackground = () => {
       ) {
         setMainSpeed(
           settings.background.speedModifier.boatMovement.right *
-            speed *
+            gameSpeed *
             speedModifier *
             0.2
         );
@@ -143,19 +143,19 @@ export const useHandleBackground = () => {
       if (boat.moving === "left") {
         setMainSpeed(
           settings.background.speedModifier.boatMovement.left *
-            speed *
+            gameSpeed *
             speedModifier *
             0.2
         );
       }
       if (boat.moving === "down") {
-        setMainSpeed(settings.background.mainSpeed * speed * speedModifier);
+        setMainSpeed(settings.background.mainSpeed * gameSpeed * speedModifier);
       }
       if (boat.moving === "up") {
-        setMainSpeed(settings.background.mainSpeed * speed * speedModifier);
+        setMainSpeed(settings.background.mainSpeed * gameSpeed * speedModifier);
       }
     } else {
-      setMainSpeed(settings.background.mainSpeed * speed * speedModifier);
+      setMainSpeed(settings.background.mainSpeed * gameSpeed * speedModifier);
     }
     if (bg4.x2 < 0) {
       setBg4((prev) => {

@@ -142,16 +142,21 @@ export const scoresSlice = createSlice({
 export const { resetYourRank } = scoresSlice.actions;
 
 // export states
-export const status = (state) => state.scores.status;
-export const error = (state) => state.scores.error;
 
 // export data
-export const data = (state) => state.scores.data;
-export const yourRank = (state) => state.scores.yourRank;
 
 export const singleData = (state, id) =>
   state.scores.data.find((d) => d.id === id);
 // export const certainData = (state) =>
 //   state.users.certainData;
+
+export const scoresData = (state) => {
+  const origin = state.scores;
+  return {
+    scores: origin.data,
+    rank: origin.yourRank,
+    status: origin.status,
+  };
+};
 
 export default scoresSlice.reducer;

@@ -2,14 +2,15 @@
 
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { data, getTopScores, yourRank } from "../store/scoresSlice";
+import { getTopScores, scoresData } from "../store/scoresSlice";
 import { If } from "./utils/If";
 
 export const Scoreboard = ({ home }) => {
   const dispatch = useDispatch();
-  const scores = useSelector(data);
-  const rank = useSelector(yourRank);
+
+  const { scores, rank } = useSelector(scoresData);
   const [fillOut, setFillOut] = useState([]);
+
   useEffect(() => {
     const arr = [];
     const amount = 10 - scores.scores.length;

@@ -35,7 +35,7 @@ export const useHandleCrash = () => {
   const { hitbox } = useSelector(playerObject);
   // console.log(hitbox);
 
-  const handleCrash = (edges) => {
+  const handleCrash = () => {
     let collision = false;
     obstaclesArray.forEach((o) => {
       const hit = checkIfHit(hitbox, o.x, o.y, o.size, o.size);

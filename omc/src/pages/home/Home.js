@@ -14,20 +14,15 @@ import { If } from "../../components/utils/If";
 import { Scoreboard } from "../../components/Scoreboard";
 import {
   startGame,
-  gameOver,
   setGameOver,
   reset,
+  gameplayData,
 } from "../../store/gameplaySlice";
 
 export const Home = ({ setGameAuth }) => {
   const dispatch = useDispatch();
 
-  const player = {
-    score: useSelector((state) => state.gameplay.score),
-    email: useSelector((state) => state.gameplay.playerEmail),
-    name: useSelector((state) => state.gameplay.playerName),
-  };
-  const gameOverState = useSelector(gameOver);
+  const { gameOver } = useSelector(gameplayData);
 
   const [inputsState, setInputsState] = useState({
     exists: {
@@ -58,10 +53,10 @@ export const Home = ({ setGameAuth }) => {
   }, [inputsState]);
 
   useEffect(() => {
-    if (!gameOverState) {
+    if (!gameOver) {
       dispatch(reset());
     }
-  }, [gameOverState]);
+  }, [gameOver]);
 
   return (
     <div class="main">
@@ -69,14 +64,14 @@ export const Home = ({ setGameAuth }) => {
         <img src={petter} alt="" className="petter" />
         <div id="fake-canvas">
           <div id="content">
-            <If condition={!gameOverState}>
+            <If condition={!gameOver}>
               <h1>Mission Briefing</h1>
               <Form setInputsState={setInputsState} />
               <Startbutton checkAuth={checkAuth} inputsState={inputsState} />
               <Rules />
             </If>
-            <If condition={gameOverState}>
-              <GameOver player={player} />
+            <If condition={gameOver}>
+              <GameOver />
             </If>
           </div>
         </div>
@@ -89,11 +84,13 @@ export const Home = ({ setGameAuth }) => {
   );
 };
 
-const GameOver = ({ player }) => {
+const GameOver = () => {
   const dispatch = useDispatch();
+  const { name, email, score } = useSelector(gameplayData);
+
   const handleSubmit = (bool) => {
     if (bool) {
-      dispatch(createScore(player));
+      dispatch(createScore({ name, email, score }));
     }
     dispatch(setGameOver(false));
   };
@@ -105,7 +102,7 @@ const GameOver = ({ player }) => {
     <>
       <h1>GAME OVER</h1>
       <h5>Thanks for playing!</h5>
-      <h3>Score: {player.score}</h3>
+      <h3>Score: {score}</h3>
       <div className="game-over-btns">
         <button onClick={() => handleSubmit(true)}>Submit score</button>
         <button onClick={() => handleSubmit(false)}>Skip</button>

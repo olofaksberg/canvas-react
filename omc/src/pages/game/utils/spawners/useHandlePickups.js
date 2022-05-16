@@ -6,24 +6,23 @@ import pickUpPic from "../../../../sprite/Person.png";
 
 import { settings } from "../../settings";
 
-import { gameSpeed } from "../../../../store/gameplaySlice";
 import { useSelector } from "react-redux";
 import { randomMinMax } from "../../../../utils/randomMinMax";
 import { obstaclesArray } from "./useHandleObstacles";
 import { failSpawnPosition } from "./utils/failSpawnPosition";
 import { playerObject } from "../../../../store/playerObjectSlice";
+import { gameplayData } from "../../../../store/gameplaySlice";
 
 export const pickupsArray = [];
 
 export const useHandlePickups = () => {
   const { boat } = useSelector(playerObject);
+  const { gameSpeed } = useSelector(gameplayData);
   const pickupImage = new Image();
   pickupImage.src = pickUpPic;
 
-  const speed = useSelector(gameSpeed);
-
   const [pickupsSpeed, setPickupsSpeed] = useState(
-    settings.drowningPeople.speed * speed
+    settings.drowningPeople.speed * gameSpeed
   );
   const [pickupsSpawnRate, setPickupsSpawnRate] = useState(
     settings.drowningPeople.spawnRate
@@ -38,7 +37,9 @@ export const useHandlePickups = () => {
   const updatePickup = (context, o, playerObject) => {
     if (boat.moving) {
       if (boat.moving === "down" || boat.moving === "up") {
-        setPickupsSpeed(settings.drowningPeople.speed * speed * speedModifier);
+        setPickupsSpeed(
+          settings.drowningPeople.speed * gameSpeed * speedModifier
+        );
       } else {
         if (
           boat.moving === "right" &&
@@ -46,20 +47,22 @@ export const useHandlePickups = () => {
         ) {
           setPickupsSpeed(
             settings.drowningPeople.speedModifier.boatMovement.right *
-              speed *
+              gameSpeed *
               speedModifier
           );
         }
         if (boat.moving === "left") {
           setPickupsSpeed(
             settings.drowningPeople.speedModifier.boatMovement.left *
-              speed *
+              gameSpeed *
               speedModifier
           );
         }
       }
     } else {
-      setPickupsSpeed(settings.drowningPeople.speed * speed * speedModifier);
+      setPickupsSpeed(
+        settings.drowningPeople.speed * gameSpeed * speedModifier
+      );
     }
     o.x = o.x - pickupsSpeed;
     drawPickup(context, o.x, o.y, o.size);
