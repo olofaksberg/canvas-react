@@ -1,7 +1,6 @@
 /** @format */
 
 import mongoose from "mongoose";
-// import { paginate } from "mongoose-paginate-v2";
 
 const { Schema, Types } = mongoose;
 
@@ -23,7 +22,5 @@ const scoreSchema = new Schema({
     default: new Date(),
   },
 });
-
-// scoreSchema.plugin(paginate);
 
 export const scoreModel = mongoose.model("Score", scoreSchema);

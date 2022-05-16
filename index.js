@@ -9,12 +9,12 @@ import path from "path";
 import dotenv from "dotenv";
 
 import index from "./api/routers/index.js";
-// import protectedRouter from "./routers/protected.js";
-// import { protectedMw } from "./middlewares/protectedMw.js";
 
 dotenv.config();
 
 const app = express();
+
+const PORT = process.env.PORT || 5500;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -41,7 +41,6 @@ app.use(express.static(path.resolve("./omc/public")));
 // prod
 // app.use(express.static(path.resolve("./omc/build")));
 
-// app.use("/protected", protectedMw, protectedRouter);
 app.use("/", index);
 
 app.get("*", (req, res) =>
@@ -54,6 +53,6 @@ app.get("*", (req, res) =>
   })
 );
 
-app.listen(process.env.PORT || 5500, () => {
-  console.log("lyssnar" + 5500);
+app.listen(PORT, () => {
+  console.log("lyssnar" + PORT);
 });
