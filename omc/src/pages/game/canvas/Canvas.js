@@ -9,7 +9,7 @@ import { useHandlePickups } from "../utils/spawners/useHandlePickups";
 import { useHandleCrash } from "../utils/events/useHandleCrash";
 import { useHandlePickup } from "../utils/events/useHandlePickup";
 
-import { useHandleBackground } from "../utils/useHandleBackground";
+import { useHandleBNFground } from "../utils/useHandleBNFground";
 
 import {
   lostLives,
@@ -38,7 +38,7 @@ export const Canvas = ({ canvasWidth, canvasHeight }) => {
   const { handleCrash } = useHandleCrash();
   const { handlePickup } = useHandlePickup();
 
-  const { updateBackground } = useHandleBackground();
+  const { updateBackground } = useHandleBNFground();
 
   useLayoutEffect(() => {
     let timerId;
@@ -55,7 +55,7 @@ export const Canvas = ({ canvasWidth, canvasHeight }) => {
     const context = canvas.getContext("2d");
     context.clearRect(0, 0, settings.canvasWidth, settings.canvasHeight);
 
-    updateBackground(context, boat);
+    updateBackground(context);
 
     updatePickups(context, frame, boat);
     updateObstacles(context, frame, boat);

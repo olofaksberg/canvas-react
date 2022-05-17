@@ -43,15 +43,15 @@ export const settings = {
   // background
   background: {
     height: 125,
-    mainSpeed: 1,
+    mainSpeed: 0.1,
     bg1: {
-      speed: 10,
+      speed: 3.5,
     },
     bg2: {
-      speed: 8,
+      speed: 1.5,
     },
     bg3: {
-      speed: 6,
+      speed: 0.6,
     },
     bg4: {
       speed: 0,
