@@ -14,15 +14,13 @@ import { useHandleBNFground } from "../utils/useHandleBNFground";
 import {
   lostLives,
   updateScore,
-  score,
   updateSpeed,
-  speed,
 } from "../../../store/gameplaySlice";
 import { useDispatch, useSelector } from "react-redux";
 
 import { settings } from "../settings";
 
-export const Canvas = ({ canvasWidth, canvasHeight }) => {
+export const Canvas = () => {
   const canvasRef = useRef();
   const dispatch = useDispatch();
   const score = useSelector((state) => state.gameplay.score);
@@ -57,8 +55,8 @@ export const Canvas = ({ canvasWidth, canvasHeight }) => {
 
     updateBackground(context);
 
-    updatePickups(context, frame, boat);
-    updateObstacles(context, frame, boat);
+    updatePickups(context, frame);
+    updateObstacles(context, frame);
 
     drawPlayerObject(context);
     playerObjectAnimations(frame);
