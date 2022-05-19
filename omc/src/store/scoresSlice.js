@@ -1,6 +1,6 @@
 /** @format */
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { PROTECTED_GET, PROTECTED_POST, GET, POST } from "../utils/fetch";
+import { PROTECTED_GET, GET, POST } from "../utils/fetch";
 
 // fetches
 export const getAllScores = createAsyncThunk("getAllScores", async () => {
@@ -126,7 +126,6 @@ export const scoresSlice = createSlice({
         if (success) {
           state.status = "succeeded";
           state.data = state.data.filter((d) => d.id !== data);
-          //   state.certainData = null;
         } else {
           state.status = "failed";
           state.error = message;
@@ -141,14 +140,8 @@ export const scoresSlice = createSlice({
 
 export const { resetYourRank } = scoresSlice.actions;
 
-// export states
-
-// export data
-
 export const singleData = (state, id) =>
   state.scores.data.find((d) => d.id === id);
-// export const certainData = (state) =>
-//   state.users.certainData;
 
 export const scoresData = (state) => {
   const origin = state.scores;

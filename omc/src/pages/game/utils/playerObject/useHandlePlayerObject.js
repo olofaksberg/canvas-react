@@ -6,7 +6,6 @@ import { settings } from "../../settings";
 
 import { animateBoat, playerObject } from "../../../../store/playerObjectSlice";
 import { useDispatch, useSelector } from "react-redux";
-import { updateSpeed } from "../../../../store/gameplaySlice";
 import { useHandleMovement } from "./utils/movePlayerObject";
 
 export const useHandlePlayerObject = () => {

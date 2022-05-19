@@ -5,7 +5,6 @@ import { playerObject } from "../../../../store/playerObjectSlice";
 import { handleHit, spawners } from "../../../../store/spawnersSlice";
 import { checkIfHit } from "../../../../utils/checkIfHit";
 
-// NEW
 export const useHandleCrash = () => {
   const dispatch = useDispatch();
   const { obstacles } = useSelector(spawners);

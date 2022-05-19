@@ -16,12 +16,12 @@ const initialState = {
   },
   hitbox: [
     {
-      x: settings.boat.startPositionX,
-      y: settings.boat.startPositionY,
+      x: settings.boat.startPositionX + 40,
+      y: settings.boat.startPositionY + 5,
     },
     {
-      x: settings.boat.startPositionX + 134 - 5,
-      y: settings.boat.startPositionX + 46 - 5,
+      x: settings.boat.startPositionX + 176 - 5,
+      y: settings.boat.startPositionX + 74 - 10,
     },
   ],
   status: "idle",

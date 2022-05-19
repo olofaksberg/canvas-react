@@ -19,26 +19,26 @@ export const settings = {
     spawnRate: 70,
     speed: 3,
     minimumSize: 30,
-    maximumSize: 90,
-    speedModifier: {
-      boatMovement: {
-        right: 4,
-        left: 2.5,
-      },
-    },
+    maximumSize: 60,
+    // speedModifier: {
+    //   boatMovement: {
+    //     right: 4,
+    //     left: 2.5,
+    //   },
+    // },
   },
   // drowning people
   drowningPeople: {
-    spawnRate: 40,
+    spawnRate: 90,
     speed: 3,
     minimumSize: 50,
     maximumSize: 50,
-    speedModifier: {
-      boatMovement: {
-        right: 4,
-        left: 2.5,
-      },
-    },
+    // speedModifier: {
+    //   boatMovement: {
+    //     right: 4,
+    //     left: 2.5,
+    //   },
+    // },
   },
   // background
   background: {
@@ -56,12 +56,12 @@ export const settings = {
     bg4: {
       speed: 0,
     },
-    speedModifier: {
-      boatMovement: {
-        right: 7,
-        left: 4,
-      },
-    },
+    // speedModifier: {
+    //   boatMovement: {
+    //     right: 7,
+    //     left: 4,
+    //   },
+    // },
   },
   // difficulty rise
   difficulty: {
