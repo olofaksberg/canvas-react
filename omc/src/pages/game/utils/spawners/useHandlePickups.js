@@ -1,42 +1,42 @@
 /** @format */
 
 import pickupPic from "../../../../sprite/Person.png";
-import { settings } from "../../settings";
+import { settings } from "../../../../config/settings";
 
 import { useDispatch, useSelector } from "react-redux";
 import {
-  movePickups,
-  spawners,
-  spawnPickup,
+ movePickups,
+ spawners,
+ spawnPickup,
 } from "../../../../store/spawnersSlice";
 
 export const useHandlePickups = () => {
-  const dispatch = useDispatch();
-  const { pickups } = useSelector(spawners);
+ const dispatch = useDispatch();
+ const { pickups } = useSelector(spawners);
 
-  const pickupImage = new Image();
-  pickupImage.src = pickupPic;
+ const pickupImage = new Image();
+ pickupImage.src = pickupPic;
 
-  // not sure if this actually will be modified, so state seems unnecessary
-  const pickupsSpawnRate = settings.drowningPeople.spawnRate;
+ // not sure if this actually will be modified, so state seems unnecessary
+ const pickupsSpawnRate = settings.drowningPeople.spawnRate;
 
-  const drawPickup = (context, o) => {
-    context.drawImage(pickupImage, 0, 0, 60, 51, o.x, o.y, o.size, o.size);
-  };
+ const drawPickup = (context, o) => {
+  context.drawImage(pickupImage, 0, 0, 60, 51, o.x, o.y, o.size, o.size);
+ };
 
-  const updatePickups = (context, frame) => {
-    const timeToSpawn = frame % pickupsSpawnRate === 0;
-    if (timeToSpawn) {
-      dispatch(spawnPickup());
-    }
-    dispatch(movePickups());
+ const updatePickups = (context, frame) => {
+  const timeToSpawn = frame % pickupsSpawnRate === 0;
+  if (timeToSpawn) {
+   dispatch(spawnPickup());
+  }
+  dispatch(movePickups());
 
-    for (let i = 0; i < pickups.length; i++) {
-      drawPickup(context, pickups[i]);
-    }
-  };
+  for (let i = 0; i < pickups.length; i++) {
+   drawPickup(context, pickups[i]);
+  }
+ };
 
-  return {
-    updatePickups,
-  };
+ return {
+  updatePickups,
+ };
 };
